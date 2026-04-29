@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Computer Journey - Science 8</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0a0f2a, #0a1a2a);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .step-container {
+            background: rgba(10, 20, 40, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 48px;
+            padding: 30px;
+            max-width: 800px;
+            width: 100%;
+            border: 2px solid #00d8ff;
+            box-shadow: 0 0 40px rgba(0,216,255,0.3);
+            transition: all 0.3s ease;
+        }
+
+        .progress-bar {
+            background: #1e2a3a;
+            border-radius: 30px;
+            height: 12px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: #00d8ff;
+            width: 0%;
+            height: 100%;
+            border-radius: 30px;
+            transition: width 0.5s ease;
+            box-shadow: 0 0 8px cyan;
+        }
+
+        .step-card {
+            background: #0f1a2b;
+            border-radius: 32px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid #2a4c6e;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            color: #00d8ff;
+            font-size: 28px;
+            margin-bottom: 12px;
+            text-shadow: 0 0 5px cyan;
+        }
+
+        .sub {
+            color: #7faaC0;
+            margin-bottom: 20px;
+            border-right: 3px solid cyan;
+            padding-right: 15px;
+        }
+
+        .content-text {
+            color: #e0f0ff;
+            line-height: 1.7;
+            font-size: 18px;
+        }
+
+        .content-text p {
+            margin-bottom: 15px;
+        }
+
+        .image-place {
+            background: #07121f;
+            border-radius: 24px;
+            padding: 20px;
+            text-align: center;
+            margin: 20px 0;
+            border: 1px dashed #00d8ff;
+        }
+
+        .image-place span {
+            font-size: 70px;
+            display: block;
+        }
+
+        .term-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .term {
+            background: #1f3a4b;
+            padding: 10px 18px;
+            border-radius: 40px;
+            color: cyan;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+            border: none;
+            font-size: 16px;
+        }
+
+        .term:hover {
+            background: #00a3cc;
+            color: #0a0f2a;
+            transform: scale(1.03);
+        }
+
+        .definition {
+            background: #071826;
+            padding: 18px;
+            border-radius: 20px;
+            margin-top: 15px;
+            border-left: 6px solid cyan;
+            color: #bbddff;
+        }
+
+        .quiz-option {
+            background: #1f3348;
+            padding: 12px 18px;
+            margin: 12px 0;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: 0.2s;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .quiz-option:hover {
+            background: #2c4f6e;
+        }
+
+        .correct-feedback {
+            background: #0b4b2e;
+            padding: 12px;
+            border-radius: 20px;
+            margin-top: 12px;
+            color: #aaffdd;
+        }
+
+        .wrong-feedback {
+            background: #6e2a2a;
+            padding: 12px;
+            border-radius: 20px;
+            margin-top: 12px;
+            color: #ffbbbb;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+        }
+
+        .nav-btn {
+            background: #00a3cc;
+            border: none;
+            padding: 14px 25px;
+            border-radius: 60px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #0a0f2a;
+            cursor: pointer;
+            transition: 0.2s;
+            flex: 1;
+            text-align: center;
+        }
+
+        .nav-btn:disabled {
+            background: #2e4a62;
+            color: #88aacc;
+            cursor: not-allowed;
+        }
+
+        .nav-btn:active:not(:disabled) {
+            transform: scale(0.97);
+        }
+
+        .step-counter {
+            text-align: center;
+            margin-top: 15px;
+            color: #5f8db0;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 13px;
+            color: #3a6680;
+        }
+    </style>
+</head>
+<body>
+
+<div class="step-container" id="app">
+    <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+    </div>
+
+    <div class="step-card" id="stepContent">
+        <!-- dynamic content -->
+    </div>
+
+    <div class="nav-buttons">
+        <button class="nav-btn" id="prevBtn" disabled>◀ Back</button>
+        <button class="nav-btn" id="nextBtn">Next ▶</button>
+    </div>
+    <div class="step-counter" id="stepCounter"></div>
+    <footer>🖱️ Computer Evolution Journey - Click "Next" to explore</footer>
+</div>
+
+<script>
+    // ----------------------------- DATA (Full English) -------------------------
+    const steps = [
+        {
+            title: "💾 Start: The Giant Computer",
+            text: `<p><strong>SCIENCE 8 - Computers</strong></p>
+                   <p>A computer is a machine which processes data. It is given data and a program that tells it what to do with the data. In the 1960's a computer filled a very large room. Today, a computer with the same power takes up the same space as a typewriter. Portable computers, called laptops, notebooks or palmtops, are even smaller.</p>
+                   <div class="image-place"><span>🖥️📀 ➡️ 💻📱</span><br>1960s: whole room → Today: fits in a bag</div>`,
+            quiz: null
+        },
+        {
+            title: "🖱️ Main Parts",
+            text: `<div class="image-place"><span>🖥️ Monitor | 🖨️ Printer | 💾 Disk drive | 🖱️ Mouse | ⌨️ Keyboard | 💽 Floppy disks</span></div>
+                   <p><strong>Learn the parts:</strong> Monitor displays information, Printer produces a paper copy, Mouse and Keyboard are input devices, Disks store data.</p>`,
+            quiz: null
+        },
+        {
+            title: "🔧 Basic Terms (Hardware & Software)",
+            text: `<p><strong>Click any term to see its definition 👇</strong></p>
+                   <div class="term-buttons" id="termsArea">
+                       <button class="term" data-def="Physical computer equipment: the computer itself, printer, keyboard, mouse and modem.">Hardware</button>
+                       <button class="term" data-def="A set of instructions that tells the computer what to do.">Program</button>
+                       <button class="term" data-def="Computer programs, stored on disk.">Software</button>
+                       <button class="term" data-def="Information fed into the computer and information the computer produces.">Data</button>
+                       <button class="term" data-def="The data put into the computer.">Input</button>
+                       <button class="term" data-def="The results produced by the computer.">Output</button>
+                   </div>
+                   <div id="definitionBox" class="definition" style="display:none;">🔍 Click a term to see definition</div>`,
+            quiz: null
+        },
+        {
+            title: "🧠 Memory: ROM vs RAM (most important)",
+            text: `<p><strong>ROM (Read Only Memory):</strong> Permanent store of instructions that tell the computer how to work. Built into the computer when it is made and cannot be changed.</p>
+                   <p><strong>RAM (Random Access Memory):</strong> Secondary memory. Stores all input and output data temporarily. Data in RAM can be constantly changed or deleted. <span style="color:#ffaa66;">⚠️ If you switch off without saving → you lose your data!</span> Therefore, it is important to save your work at regular intervals and keep a copy on disk before switching off.</p>
+                   <div class="image-place"><span>💾 ROM 🔒 permanent | 🧠 RAM ✏️ temporary</span></div>`,
+            quiz: {
+                question: "❓ Why is it important to save your work on disk before switching off the computer?",
+                options: ["Because RAM stores data permanently", "Because RAM is temporary and data is lost when power is off ❤️", "Because ROM needs more space"],
+                correct: 1,
+                explanation: "✅ Correct! RAM is temporary memory. When you switch off the computer, all data in RAM disappears. That's why we use disks (floppy/hard) to save our work."
+            }
+        },
+        {
+            title: "📀 Disks (Floppy & Hard Disk)",
+            text: `<p><strong>Disk:</strong> A magnetic device which stores data from the computer's RAM.</p>
+                   <p>💾 <strong>Floppy disk:</strong> Put into the computer's disk drive when data is needed or when it is necessary to store (save) data. Also used to transfer data to another computer.</p>
+                   <p>🔩 <strong>Hard disk:</strong> Built into the computer. Holds more data than a floppy disk and works much faster.</p>`,
+            quiz: null
+        },
+        {
+            title: "📡 Modern Add-ons: Modem & CD-ROM",
+            text: `<p><strong>Modem:</strong> A device used to connect a computer to a telephone line. Information can be sent directly from one computer to another.</p>
+                   <p><strong>CD-ROM:</strong> Compact disc with read-only memory. Cannot be changed. Looks like a music CD but must be used on a computer with a CD-ROM drive. Stores huge amounts of information (words, pictures, drawings, games). A whole encyclopedia can be stored on one disk. 💿📚</p>
+                   <div class="image-place"><span>📞 Modem → 🌐 | 💿 CD-ROM → 📖 Encyclopedia</span></div>
+                   <p><em>Note: "Program" and "Disk" are American spellings. In British English, these spellings are used only in connection with computers.</em></p>`,
+            quiz: null
+        },
+        {
+            title: "🤔 Final Discussion: Humans vs Computers",
+            text: `<p><strong>💬 "Computers are programmed; people are not."</strong></p>
+                   <p>What advantages does this give us over computers?</p>
+                   <p>✨ What can we do that computers probably never will?</p>
+                   <div class="image-place"><span>🧠 Creativity ❤️ Emotions 🎨 Art 🤝 Ethics</span></div>
+                   <p><strong>📝 Activity:</strong> Write your answer or discuss with classmates. Computers follow instructions, but humans create, feel, and make moral decisions.</p>
+                   <p>🔍 Do you remember? "Laptop" (lap + top) and "Palmtop" (palm) because they fit on your lap or in your palm.</p>`,
+            quiz: null
+        }
+    ];
+
+    let currentStep = 0;
+    const totalSteps = steps.length;
+
+    const stepContent = document.getElementById('stepContent');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const stepCounter = document.getElementById('stepCounter');
+    const progressFill = document.getElementById('progressFill');
+
+    function updateProgress() {
+        let percent = ((currentStep + 1) / totalSteps) * 100;
+        progressFill.style.width = percent + '%';
+        stepCounter.innerText = `Step ${currentStep+1} of ${totalSteps}`;
+    }
+
+    function attachTermEvents() {
+        const terms = document.querySelectorAll('.term');
+        const defBox = document.getElementById('definitionBox');
+        if(!defBox) return;
+        terms.forEach(term => {
+            term.removeEventListener('click', term._listener);
+            const listener = function() {
+                const definition = this.getAttribute('data-def');
+                defBox.style.display = 'block';
+                defBox.innerHTML = `📖 ${definition}`;
+            };
+            term.addEventListener('click', listener);
+            term._listener = listener;
+        });
+    }
+
+    function attachQuizEvents() {
+        const quizDiv = document.getElementById('quizContainer');
+        if(!quizDiv) return;
+        const options = document.querySelectorAll('.quiz-option');
+        options.forEach(opt => {
+            opt.removeEventListener('click', opt._quizListener);
+            const listener = function() {
+                const isCorrect = this.getAttribute('data-correct') === 'true';
+                const feedbackDiv = document.getElementById('quizFeedback');
+                const stepData = steps[currentStep];
+                if(stepData.quiz) {
+                    if(isCorrect) {
+                        feedbackDiv.innerHTML = `<div class="correct-feedback">✅ ${stepData.quiz.explanation}</div>`;
+                    } else {
+                        feedbackDiv.innerHTML = `<div class="wrong-feedback">❌ Wrong answer. Try again! Remember: RAM is temporary.</div>`;
+                    }
+                }
+            };
+            opt.addEventListener('click', listener);
+            opt._listener = listener;
+        });
+    }
+
+    function renderStep() {
+        const step = steps[currentStep];
+        let html = `<h1>${step.title}</h1><div class="content-text">${step.text}</div>`;
+
+        if(step.quiz) {
+            let quizHtml = `<div id="quizContainer" style="margin-top:25px; background:#0b1422; padding:20px; border-radius:28px;">
+                                <p><strong>${step.quiz.question}</strong></p>`;
+            step.quiz.options.forEach((opt, idx) => {
+                let isCor = (idx === step.quiz.correct);
+                quizHtml += `<div class="quiz-option" data-correct="${isCor}">${opt}</div>`;
+            });
+            quizHtml += `<div id="quizFeedback"></div></div>`;
+            html += quizHtml;
+        }
+
+        stepContent.innerHTML = html;
+        updateProgress();
+
+        if(currentStep === 2) {
+            attachTermEvents();
+        }
+        if(step.quiz) {
+            attachQuizEvents();
+        }
+
+        prevBtn.disabled = (currentStep === 0);
+        if(currentStep === totalSteps-1) {
+            nextBtn.innerText = "🎉 Finish Journey";
+        } else {
+            nextBtn.innerText = "Next ▶";
+        }
+    }
+
+    function nextStep() {
+        if(currentStep < totalSteps-1) {
+            currentStep++;
+            renderStep();
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        } else if (currentStep === totalSteps-1) {
+            alert("🎉✨ You completed the Computer Journey! 🖥️🚀\n\nShare your discussion answers with your teacher. Remember: creativity and emotions are what make us different from machines.");
+        }
+    }
+
+    function prevStep() {
+        if(currentStep > 0) {
+            currentStep--;
+            renderStep();
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+    }
+
+    prevBtn.addEventListener('click', prevStep);
+    nextBtn.addEventListener('click', nextStep);
+
+    renderStep();
+</script>
+</body>
+</html>
